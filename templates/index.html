@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Lock System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #video-feed {
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #lock-status {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Recognition Lock System</h1>
+    <img id="video-feed" src="/video_feed" alt="Video Feed">
+    <div class="controls">
+        <button onclick="lockSystem()">Lock</button>
+        <button onclick="unlockSystem()">Unlock</button>
+        </div>
+    <div id="lock-status">Status: Locked</div>
+
+    <script>
+        async function lockSystem() {
+            const response = await fetch('/lock', { method: 'POST' });
+            const data = await response.json();
+            updateLockStatus(data.status);
+        }
+
+        async function unlockSystem() {
+            const response = await fetch('/unlock', { method: 'POST' });
+            const data = await response.json();
+            updateLockStatus(data.status);
+        }
+
+        async function getLockStatus() {
+            const response = await fetch('/lock_status');
+            const data = await response.json();
+            updateLockStatus(data.status);
+        }
+
+        function updateLockStatus(status) {
+            document.querySelector('#lock-status').textContent = `Status: ${status}`;
+        }
+
+        setInterval(getLockStatus, 1000); // Update lock status every second
+    </script>
+</body>
+</html>
